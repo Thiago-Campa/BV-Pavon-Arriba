@@ -1,0 +1,8 @@
+footer {
+  padding: 32px 0 44px;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  background: var(--navy);
+  color: #cfd3da;
+}

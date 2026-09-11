@@ -1,0 +1,80 @@
+.memorial-section {
+  background: var(--navy);
+  border-top: none;
+}
+
+.memorial-card {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.memorial-photo {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--gold);
+  flex-shrink: 0;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.memorial-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.45s ease;
+}
+
+.memorial-photo:hover img,
+.memorial-photo--zoomed img {
+  transform: scale(1.18);
+}
+
+.memorial-text {
+  color: #f2f0ea;
+}
+
+.memorial-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.memorial-text h2 {
+  font-size: 2.3rem;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+.memorial-role {
+  font-size: 0.95rem;
+  color: #cfd3da;
+  margin-bottom: 18px;
+}
+
+.memorial-tribute {
+  color: #dfe2e8;
+  font-size: 1.02rem;
+  max-width: 60ch;
+}
+
+@media (max-width: 700px) {
+  .memorial-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .memorial-tribute {
+    margin: 0 auto;
+  }
+}
