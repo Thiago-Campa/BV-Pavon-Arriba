@@ -47,10 +47,7 @@ export const galleryPhotos = [
   { id: 9, src: '/gallery/galeria 9.png', caption: '' },
   { id: 10, src: '/gallery/galeria 10.png', caption: '' },
   { id: 11, src: '/gallery/galeria 11.png', caption: '' },
-<<<<<<< HEAD
   { id: 12, src: '/gallery/galeria 12.png', caption: '' },
-=======
->>>>>>> 125c2b900ff746feaadf1c4703252ab4b59a21e1
 ]
 
 // ------------------------------------------------------------
