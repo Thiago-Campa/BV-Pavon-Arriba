@@ -47,6 +47,7 @@ export const galleryPhotos = [
   { id: 9, src: '/gallery/galeria 9.png', caption: '' },
   { id: 10, src: '/gallery/galeria 10.png', caption: '' },
   { id: 11, src: '/gallery/galeria 11.png', caption: '' },
+  { id: 12, src: '/gallery/galeria 12.png', caption: '' },
 ]
 
 // ------------------------------------------------------------
@@ -101,9 +102,9 @@ export const board = [
 export const news = [
   {
     id: 1,
-    date: '2026-09-01',
-    title: 'Título de ejemplo de una noticia',
-    body: 'Acá va el texto de la noticia. Reemplazá este contenido de ejemplo cuando tengas novedades reales para publicar: capacitaciones, operativos, donaciones, actividades solidarias, etc.',
+    date: '2026-09-12',
+    title: 'Ultima salida',
+    body: 'Socorrimos a dotacion correspondiente al cuartel de la localidad de Maximo Paz, por causa de un incedio forestal.',
     image: '',
   },
 ]
