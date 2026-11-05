@@ -1,18 +1,32 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ChevronDown, ChevronUp } from 'lucide-react'
-import { galleryPhotos } from '../data.js'
+import { X, ChevronDown, ChevronUp, Plus } from 'lucide-react'
+import { galleryPhotos as fallbackPhotos } from '../data.js'
+import { api } from '../api.js'
+import { useAuth } from '../context/AuthContext.jsx'
+import PhotoForm from './PhotoForm.jsx'
+import './Admin.css'
 import './Gallery.css'
 
 const INITIAL_VISIBLE = 4
 const LONG_PRESS_MS = 400
 
 export default function Gallery() {
+  const { isAdmin } = useAuth()
+  const [galleryPhotos, setGalleryPhotos] = useState(fallbackPhotos)
+  const [showForm, setShowForm] = useState(false)
   const [selected, setSelected] = useState(null)
   const [expanded, setExpanded] = useState(false)
   const [zoomedId, setZoomedId] = useState(null)
   const timerRef = useRef(null)
   const suppressClickRef = useRef(false)
+
+  useEffect(() => {
+    api
+      .getPhotos()
+      .then(setGalleryPhotos)
+      .catch(() => {}) // si el servidor no responde, se muestran las fotos de data.js
+  }, [])
 
   const hasMore = galleryPhotos.length > INITIAL_VISIBLE
   const visible = expanded ? galleryPhotos : galleryPhotos.slice(0, INITIAL_VISIBLE)
@@ -52,6 +66,27 @@ export default function Gallery() {
           <h2>Fotos</h2>
           <p className="section-lead">Pasá el cursor o mantené el dedo sobre una foto para verla más grande. Tocala para abrirla en pantalla completa.</p>
         </motion.div>
+
+        {isAdmin && (
+          <>
+            {!showForm && (
+              <div className="admin-bar">
+                <button type="button" className="admin-add-btn" onClick={() => setShowForm(true)}>
+                  <Plus size={16} /> Agregar foto
+                </button>
+              </div>
+            )}
+            {showForm && (
+              <PhotoForm
+                onCancel={() => setShowForm(false)}
+                onAdded={(photo) => {
+                  setGalleryPhotos((list) => [photo, ...list])
+                  setShowForm(false)
+                }}
+              />
+            )}
+          </>
+        )}
 
         <div className="gallery-grid">
           {visible.map((item, i) => (

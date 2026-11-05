@@ -1,6 +1,11 @@
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Calendar } from 'lucide-react'
-import { news } from '../data.js'
+import { Calendar, Plus } from 'lucide-react'
+import { news as fallbackNews } from '../data.js'
+import { api } from '../api.js'
+import { useAuth } from '../context/AuthContext.jsx'
+import NewsForm from './NewsForm.jsx'
+import './Admin.css'
 import './News.css'
 
 function formatDate(iso) {
@@ -16,6 +21,17 @@ function formatDate(iso) {
 }
 
 export default function News() {
+  const { isAdmin } = useAuth()
+  const [news, setNews] = useState(fallbackNews)
+  const [showForm, setShowForm] = useState(false)
+
+  useEffect(() => {
+    api
+      .getNews()
+      .then(setNews)
+      .catch(() => {}) // si el servidor no responde, se muestran las noticias de data.js
+  }, [])
+
   const sorted = [...news].sort((a, b) => new Date(b.date) - new Date(a.date))
 
   return (
@@ -31,6 +47,27 @@ export default function News() {
           <span className="section-eyebrow">Al día</span>
           <h2>Noticias</h2>
         </motion.div>
+
+        {isAdmin && (
+          <>
+            {!showForm && (
+              <div className="admin-bar">
+                <button type="button" className="admin-add-btn" onClick={() => setShowForm(true)}>
+                  <Plus size={16} /> Agregar noticia
+                </button>
+              </div>
+            )}
+            {showForm && (
+              <NewsForm
+                onCancel={() => setShowForm(false)}
+                onAdded={(item) => {
+                  setNews((list) => [item, ...list])
+                  setShowForm(false)
+                }}
+              />
+            )}
+          </>
+        )}
 
         <div className="news-list">
           {sorted.map((item, i) => (

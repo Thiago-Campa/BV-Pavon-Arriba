@@ -100,3 +100,28 @@ src/
     ├── Contact.jsx / .css
     └── Footer.jsx / .css
 ```
+
+
+## Base de datos y administración (Fotos y Noticias)
+
+Las **fotos de la galería** y las **noticias** ahora viven en una base de datos SQLite (`server/data/bomberos.db`), servida por un backend Node + Express (`server/`). El resto del contenido sigue en `src/data.js`.
+
+### Cómo correrlo
+
+```bash
+npm install
+ADMIN_USER=admin ADMIN_PASSWORD=tu-clave npm run dev
+```
+
+(Si no definís `ADMIN_PASSWORD`, la primera vez se genera una y se imprime en la consola.) El usuario admin se crea una sola vez, al iniciar con la base vacía.
+
+- Sitio: http://localhost:5173 (Vite hace proxy de `/api` y `/uploads` al backend en el puerto 3001)
+- Producción: `npm run build` y luego `npm start` (Express sirve `dist/` y la API en el mismo puerto)
+
+### Cómo se usa
+
+1. Abajo de todo, en el pie de página, tocá **Administración** e iniciá sesión.
+2. En **Noticias** y **Fotos** aparece el botón **Agregar noticia** / **Agregar foto** (solo para admin).
+3. Las imágenes subidas se guardan en `uploads/` y los datos en la base. Ambas carpetas (`uploads/` y `server/data/`) hay que respaldarlas.
+
+Las fotos y la noticia que ya estaban se cargan solas en la base la primera vez. Si el servidor no está disponible, el sitio muestra el contenido de `data.js` como respaldo.
