@@ -18,7 +18,8 @@ export default function Footer() {
   return (
     <footer>
       <div className="wrap">
-        © {new Date().getFullYear()} {institution.name} — {institution.town}
+        <p>
+          © {new Date().getFullYear()} {institution.name} — {institution.town}
         {isAdmin ? (
           <button type="button" className="admin-link" onClick={handleLogout}>
             Cerrar sesión de administrador
@@ -28,6 +29,13 @@ export default function Footer() {
             Administración
           </button>
         )}
+        </p>
+        <p className="footer-credit">
+          Creado por{' '}
+          <a href="https://github.com/Thiago-Campa" target="_blank" rel="noopener noreferrer">
+            Thiago
+          </a>
+        </p>
       </div>
       {showLogin && <AdminLogin onClose={() => setShowLogin(false)} />}
     </footer>
