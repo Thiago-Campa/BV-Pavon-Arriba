@@ -3,13 +3,16 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
+import { NotifyProvider } from './context/NotifyContext.jsx'
 import './styles/index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ThemeProvider>
       <AuthProvider>
-        <App />
+        <NotifyProvider>
+          <App />
+        </NotifyProvider>
       </AuthProvider>
     </ThemeProvider>
   </React.StrictMode>,

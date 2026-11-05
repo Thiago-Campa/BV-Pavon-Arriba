@@ -4,11 +4,14 @@ import './Admin.css'
 
 const today = () => new Date().toISOString().slice(0, 10)
 
-export default function NewsForm({ onAdded, onCancel }) {
-  const [title, setTitle] = useState('')
-  const [body, setBody] = useState('')
-  const [date, setDate] = useState(today())
+// Sirve para agregar una noticia nueva y también para modificar una existente (prop "initial").
+export default function NewsForm({ initial, onSaved, onCancel }) {
+  const editing = Boolean(initial)
+  const [title, setTitle] = useState(initial?.title ?? '')
+  const [body, setBody] = useState(initial?.body ?? '')
+  const [date, setDate] = useState(initial?.date ?? today())
   const [file, setFile] = useState(null)
+  const [removeImage, setRemoveImage] = useState(false)
   const [preview, setPreview] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -20,13 +23,18 @@ export default function NewsForm({ onAdded, onCancel }) {
     return () => URL.revokeObjectURL(url)
   }, [file])
 
+  const currentImage = editing && !removeImage ? initial.image : ''
+  const shown = preview || currentImage
+
   const submit = async (e) => {
     e.preventDefault()
     setError('')
     setLoading(true)
     try {
-      const item = await api.addNews({ title, body, date, file })
-      onAdded(item)
+      const item = editing
+        ? await api.updateNews({ id: initial.id, title, body, date, file, removeImage, currentImage: initial.image })
+        : await api.addNews({ title, body, date, file })
+      onSaved(item)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -36,7 +44,7 @@ export default function NewsForm({ onAdded, onCancel }) {
 
   return (
     <form className="admin-form" onSubmit={submit}>
-      <h3>Agregar noticia</h3>
+      <h3>{editing ? 'Modificar noticia' : 'Agregar noticia'}</h3>
       <label className="admin-field">
         Título
         <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={150} required />
@@ -50,17 +58,23 @@ export default function NewsForm({ onAdded, onCancel }) {
         <textarea value={body} onChange={(e) => setBody(e.target.value)} maxLength={5000} required />
       </label>
       <label className="admin-field">
-        Imagen (opcional)
+        {editing && initial.image ? 'Reemplazar imagen (opcional)' : 'Imagen (opcional)'}
         <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => setFile(e.target.files[0] || null)} />
       </label>
-      {preview && <img src={preview} alt="Vista previa" className="admin-preview" />}
+      {editing && initial.image && !file && (
+        <label className="admin-check">
+          <input type="checkbox" checked={removeImage} onChange={(e) => setRemoveImage(e.target.checked)} />
+          Quitar la imagen actual
+        </label>
+      )}
+      {shown && <img src={shown} alt="Vista previa" className="admin-preview" />}
       {error && <p className="admin-error">{error}</p>}
       <div className="admin-actions">
         <button type="button" className="admin-btn" onClick={onCancel}>
           Cancelar
         </button>
         <button type="submit" className="admin-btn admin-btn--primary" disabled={loading}>
-          {loading ? 'Publicando…' : 'Publicar'}
+          {loading ? 'Guardando…' : editing ? 'Guardar cambios' : 'Publicar'}
         </button>
       </div>
     </form>

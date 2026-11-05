@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ChevronDown, ChevronUp, Plus } from 'lucide-react'
+import { X, ChevronDown, ChevronUp, Plus, Trash2 } from 'lucide-react'
 import { galleryPhotos as fallbackPhotos } from '../data.js'
 import { api } from '../api.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useNotify } from '../context/NotifyContext.jsx'
 import PhotoForm from './PhotoForm.jsx'
 import './Admin.css'
 import './Gallery.css'
@@ -13,6 +14,7 @@ const LONG_PRESS_MS = 400
 
 export default function Gallery() {
   const { isAdmin } = useAuth()
+  const { notify, confirm } = useNotify()
   const [galleryPhotos, setGalleryPhotos] = useState(fallbackPhotos)
   const [showForm, setShowForm] = useState(false)
   const [selected, setSelected] = useState(null)
@@ -52,6 +54,22 @@ export default function Gallery() {
     setSelected(item)
   }
 
+  const handleDelete = async (photo) => {
+    const ok = await confirm({
+      title: 'Eliminar foto',
+      message: '¿Estás seguro de que querés eliminar esta foto de la galería? Esta acción no se puede deshacer.',
+      confirmText: 'Sí, eliminar',
+    })
+    if (!ok) return
+    try {
+      await api.deletePhoto(photo)
+      setGalleryPhotos((list) => list.filter((p) => p.id !== photo.id))
+      notify('Foto eliminada de la galería.')
+    } catch (err) {
+      notify(err.message, 'error')
+    }
+  }
+
   return (
     <section id="fotos">
       <div className="wrap">
@@ -82,6 +100,7 @@ export default function Gallery() {
                 onAdded={(photo) => {
                   setGalleryPhotos((list) => [photo, ...list])
                   setShowForm(false)
+                  notify('Foto agregada a la galería.')
                 }}
               />
             )}
@@ -90,22 +109,37 @@ export default function Gallery() {
 
         <div className="gallery-grid">
           {visible.map((item, i) => (
-            <motion.button
+            <motion.div
               key={item.id}
-              type="button"
-              className={`gallery-item${zoomedId === item.id ? ' gallery-item--zoomed' : ''}`}
+              className="gallery-cell"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.4, delay: i * 0.05 }}
-              onClick={() => handleClick(item)}
-              onTouchStart={() => startPress(item.id)}
-              onTouchEnd={endPress}
-              onTouchCancel={endPress}
             >
-              <img src={item.src} alt={item.caption} loading="lazy" />
-              {item.caption && <span className="gallery-caption">{item.caption}</span>}
-            </motion.button>
+              <button
+                type="button"
+                className={`gallery-item${zoomedId === item.id ? ' gallery-item--zoomed' : ''}`}
+                onClick={() => handleClick(item)}
+                onTouchStart={() => startPress(item.id)}
+                onTouchEnd={endPress}
+                onTouchCancel={endPress}
+              >
+                <img src={item.src} alt={item.caption} loading="lazy" />
+                {item.caption && <span className="gallery-caption">{item.caption}</span>}
+              </button>
+              {isAdmin && (
+                <button
+                  type="button"
+                  className="icon-btn icon-btn--danger photo-delete"
+                  onClick={() => handleDelete(item)}
+                  aria-label="Eliminar esta foto"
+                  title="Eliminar foto"
+                >
+                  <Trash2 size={15} />
+                </button>
+              )}
+            </motion.div>
           ))}
         </div>
 

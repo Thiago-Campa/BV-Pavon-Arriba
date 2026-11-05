@@ -1,15 +1,60 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Shield, ChevronDown, ChevronUp } from 'lucide-react'
-import { activeCorps } from '../data.js'
+import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import { Shield, ChevronDown, ChevronUp, Plus, Trash2 } from 'lucide-react'
+import { activeCorps as fallbackMembers } from '../data.js'
+import { api } from '../api.js'
+import { RANKS, sortByList } from '../constants.js'
+import { useAuth } from '../context/AuthContext.jsx'
+import { useNotify } from '../context/NotifyContext.jsx'
+import PersonForm from './PersonForm.jsx'
+import './Admin.css'
 import './ActiveCorps.css'
 
 const INITIAL_VISIBLE = 2
 
 export default function ActiveCorps() {
+  const { isAdmin } = useAuth()
+  const { notify, confirm } = useNotify()
+  const [members, setMembers] = useState(fallbackMembers)
+  const [showForm, setShowForm] = useState(false)
   const [expanded, setExpanded] = useState(false)
-  const hasMore = activeCorps.length > INITIAL_VISIBLE
-  const visible = expanded ? activeCorps : activeCorps.slice(0, INITIAL_VISIBLE)
+
+  useEffect(() => {
+    api
+      .getMembers()
+      .then(setMembers)
+      .catch(() => {}) // si el servidor no responde, se muestra la lista de data.js
+  }, [])
+
+  const sorted = sortByList(members, 'rank', RANKS)
+  // El admin ve siempre a todos, para poder administrarlos.
+  const showAll = expanded || isAdmin
+  const hasMore = !isAdmin && sorted.length > INITIAL_VISIBLE
+  const visible = showAll ? sorted : sorted.slice(0, INITIAL_VISIBLE)
+
+  const handleAdd = async ({ firstName, lastName, value }) => {
+    const member = await api.addMember({ firstName, lastName, rank: value })
+    setMembers((list) => [...list, member])
+    setShowForm(false)
+    notify(`${member.firstName} ${member.lastName} se agregó al cuerpo activo.`)
+  }
+
+  const handleDelete = async (member) => {
+    const name = `${member.firstName} ${member.lastName}`
+    const ok = await confirm({
+      title: 'Eliminar integrante',
+      message: `¿Estás seguro de que querés eliminar a ${name} (${member.rank}) del cuerpo activo?`,
+      confirmText: 'Sí, eliminar',
+    })
+    if (!ok) return
+    try {
+      await api.deleteMember(member.id)
+      setMembers((list) => list.filter((m) => m.id !== member.id))
+      notify(`${name} se eliminó del cuerpo activo.`)
+    } catch (err) {
+      notify(err.message, 'error')
+    }
+  }
 
   return (
     <section id="cuerpo-activo">
@@ -25,11 +70,32 @@ export default function ActiveCorps() {
           <h2>Cuerpo Activo</h2>
         </motion.div>
 
+        {isAdmin && (
+          <>
+            {!showForm && (
+              <div className="admin-bar">
+                <button type="button" className="admin-add-btn" onClick={() => setShowForm(true)}>
+                  <Plus size={16} /> Agregar integrante
+                </button>
+              </div>
+            )}
+            {showForm && (
+              <PersonForm
+                title="Agregar al cuerpo activo"
+                selectLabel="Cargo"
+                options={RANKS}
+                onSubmit={handleAdd}
+                onCancel={() => setShowForm(false)}
+              />
+            )}
+          </>
+        )}
+
         <div className="roster-grid">
           {visible.map((member, i) => (
             <motion.div
               key={member.id}
-              className="roster-card"
+              className={`roster-card${isAdmin ? ' roster-card--admin' : ''}`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
@@ -44,6 +110,17 @@ export default function ActiveCorps() {
                 </p>
                 <p className="roster-rank">{member.rank}</p>
               </div>
+              {isAdmin && (
+                <button
+                  type="button"
+                  className="icon-btn icon-btn--danger card-action"
+                  onClick={() => handleDelete(member)}
+                  aria-label={`Eliminar a ${member.firstName} ${member.lastName}`}
+                  title="Eliminar"
+                >
+                  <Trash2 size={15} />
+                </button>
+              )}
             </motion.div>
           ))}
         </div>

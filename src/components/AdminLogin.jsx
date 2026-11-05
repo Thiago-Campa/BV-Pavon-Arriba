@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useNotify } from '../context/NotifyContext.jsx'
 import './Admin.css'
 
 export default function AdminLogin({ onClose }) {
   const { login } = useAuth()
+  const { notify } = useNotify()
   const [mail, setMail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -16,6 +18,7 @@ export default function AdminLogin({ onClose }) {
     setLoading(true)
     try {
       await login(mail, password)
+      notify('Sesión iniciada. Ya podés administrar el contenido.')
       onClose()
     } catch (err) {
       setError(err.message)

@@ -109,7 +109,7 @@ Las **fotos de la galería** y las **noticias** viven en [Supabase](https://supa
 ### Configuración inicial (una sola vez)
 
 1. Creá un proyecto en Supabase.
-2. **SQL Editor** → pegá y corré `supabase/setup.sql` (crea tablas, permisos, buckets de imágenes y carga los datos iniciales).
+2. **SQL Editor** → pegá y corré `supabase/setup.sql` (crea tablas, permisos, buckets de imágenes y carga los datos iniciales) y después `supabase/paso-2-gestion.sql` (permisos para eliminar/modificar y tablas del Cuerpo Activo y la Comisión Directiva).
 3. **Authentication → Users → Add user**: creá el usuario administrador (email + contraseña, con "Auto Confirm User").
 4. En el SQL Editor corré, con tu mail:
    ```sql
@@ -123,3 +123,13 @@ Las **fotos de la galería** y las **noticias** viven en [Supabase](https://supa
 `npm install` y `npm run dev`. Abajo de todo, en el pie de página, tocá **Administración** e ingresá con el email y la contraseña del admin. En **Noticias** y **Fotos** aparecen los botones para agregar.
 
 Cualquiera puede ver el contenido; solo los usuarios listados en la tabla `admins` pueden publicar (lo hace cumplir la base de datos, no solo la web). Si Supabase no está configurado o no responde, el sitio muestra el contenido de `data.js`.
+
+
+### Qué puede hacer el administrador
+
+- **Fotos:** agregar y eliminar.
+- **Noticias:** agregar, modificar (título, fecha, texto, imagen) y eliminar.
+- **Cuerpo Activo:** agregar y eliminar integrantes (nombre, apellido y cargo: Jefe, Sub Jefe, Oficial, Sub Oficial, Bombero).
+- **Comisión Directiva:** agregar y eliminar integrantes (Presidente, Vicepresidente, Secretario, Tesorero, Vocal, Órgano de fiscalización).
+
+Cada alta, modificación o baja muestra un cartel de aviso, y antes de eliminar algo se pide confirmación. Los cargos disponibles están en `src/constants.js` y en las restricciones de `supabase/paso-2-gestion.sql`.
