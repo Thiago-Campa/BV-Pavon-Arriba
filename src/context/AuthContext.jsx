@@ -1,38 +1,66 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import { api, clearToken, getToken, setToken } from '../api.js'
+import { supabase } from '../supabaseClient.js'
+import { friendly } from '../api.js'
 
 const AuthContext = createContext(null)
 
+async function checkAdmin(userId) {
+  const { data } = await supabase.from('admins').select('user_id').eq('user_id', userId).maybeSingle()
+  return Boolean(data)
+}
+
 export function AuthProvider({ children }) {
   const [isAdmin, setIsAdmin] = useState(false)
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
 
-  // Al cargar, si hay un token guardado, verificamos que siga siendo válido.
+  // Al cargar, si ya había una sesión guardada, verificamos que sea de un admin.
   useEffect(() => {
-    if (!getToken()) return
-    api
-      .me()
-      .then((d) => {
+    if (!supabase) return
+    let active = true
+
+    supabase.auth.getSession().then(async ({ data }) => {
+      const user = data.session?.user
+      if (!user) return
+      const ok = await checkAdmin(user.id)
+      if (active && ok) {
         setIsAdmin(true)
-        setUsername(d.username)
-      })
-      .catch(() => clearToken())
+        setEmail(user.email || '')
+      }
+    })
+
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') {
+        setIsAdmin(false)
+        setEmail('')
+      }
+    })
+
+    return () => {
+      active = false
+      sub.subscription.unsubscribe()
+    }
   }, [])
 
-  const login = useCallback(async (user, password) => {
-    const d = await api.login(user, password)
-    setToken(d.token)
+  const login = useCallback(async (mail, password) => {
+    if (!supabase) throw new Error('Falta configurar Supabase.')
+    const { data, error } = await supabase.auth.signInWithPassword({ email: mail.trim(), password })
+    if (error) throw new Error(friendly(error))
+    const ok = await checkAdmin(data.user.id)
+    if (!ok) {
+      await supabase.auth.signOut()
+      throw new Error('Esta cuenta no es de administrador.')
+    }
     setIsAdmin(true)
-    setUsername(d.username)
+    setEmail(data.user.email || '')
   }, [])
 
-  const logout = useCallback(() => {
-    clearToken()
+  const logout = useCallback(async () => {
+    if (supabase) await supabase.auth.signOut()
     setIsAdmin(false)
-    setUsername('')
+    setEmail('')
   }, [])
 
-  return <AuthContext.Provider value={{ isAdmin, username, login, logout }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ isAdmin, email, login, logout }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

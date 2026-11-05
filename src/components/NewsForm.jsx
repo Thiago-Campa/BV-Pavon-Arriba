@@ -25,12 +25,7 @@ export default function NewsForm({ onAdded, onCancel }) {
     setError('')
     setLoading(true)
     try {
-      const fd = new FormData()
-      fd.append('title', title)
-      fd.append('body', body)
-      fd.append('date', date)
-      if (file) fd.append('image', file)
-      const item = await api.addNews(fd)
+      const item = await api.addNews({ title, body, date, file })
       onAdded(item)
     } catch (err) {
       setError(err.message)

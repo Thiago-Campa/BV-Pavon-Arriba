@@ -5,7 +5,7 @@ import './Admin.css'
 
 export default function AdminLogin({ onClose }) {
   const { login } = useAuth()
-  const [username, setUsername] = useState('')
+  const [mail, setMail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -15,7 +15,7 @@ export default function AdminLogin({ onClose }) {
     setError('')
     setLoading(true)
     try {
-      await login(username, password)
+      await login(mail, password)
       onClose()
     } catch (err) {
       setError(err.message)
@@ -32,8 +32,8 @@ export default function AdminLogin({ onClose }) {
         </button>
         <h3>Acceso administración</h3>
         <label className="admin-field">
-          Usuario
-          <input value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username" required autoFocus />
+          Email
+          <input type="email" value={mail} onChange={(e) => setMail(e.target.value)} autoComplete="email" required autoFocus />
         </label>
         <label className="admin-field">
           Contraseña

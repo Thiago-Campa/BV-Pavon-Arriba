@@ -104,24 +104,22 @@ src/
 
 ## Base de datos y administración (Fotos y Noticias)
 
-Las **fotos de la galería** y las **noticias** ahora viven en una base de datos SQLite (`server/data/bomberos.db`), servida por un backend Node + Express (`server/`). El resto del contenido sigue en `src/data.js`.
+Las **fotos de la galería** y las **noticias** viven en [Supabase](https://supabase.com) (base de datos Postgres + almacenamiento de imágenes + login). El resto del contenido sigue en `src/data.js`.
 
-### Cómo correrlo
+### Configuración inicial (una sola vez)
 
-```bash
-npm install
-ADMIN_USER=admin ADMIN_PASSWORD=tu-clave npm run dev
-```
+1. Creá un proyecto en Supabase.
+2. **SQL Editor** → pegá y corré `supabase/setup.sql` (crea tablas, permisos, buckets de imágenes y carga los datos iniciales).
+3. **Authentication → Users → Add user**: creá el usuario administrador (email + contraseña, con "Auto Confirm User").
+4. En el SQL Editor corré, con tu mail:
+   ```sql
+   insert into public.admins (user_id)
+   select id from auth.users where email = 'TU_MAIL@ejemplo.com';
+   ```
+5. Copiá `.env.example` como `.env.local` y completá `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` (la clave pública/publishable). En Vercel cargá las mismas dos variables en **Settings → Environment Variables** y volvé a desplegar.
 
-(Si no definís `ADMIN_PASSWORD`, la primera vez se genera una y se imprime en la consola.) El usuario admin se crea una sola vez, al iniciar con la base vacía.
+### Uso
 
-- Sitio: http://localhost:5173 (Vite hace proxy de `/api` y `/uploads` al backend en el puerto 3001)
-- Producción: `npm run build` y luego `npm start` (Express sirve `dist/` y la API en el mismo puerto)
+`npm install` y `npm run dev`. Abajo de todo, en el pie de página, tocá **Administración** e ingresá con el email y la contraseña del admin. En **Noticias** y **Fotos** aparecen los botones para agregar.
 
-### Cómo se usa
-
-1. Abajo de todo, en el pie de página, tocá **Administración** e iniciá sesión.
-2. En **Noticias** y **Fotos** aparece el botón **Agregar noticia** / **Agregar foto** (solo para admin).
-3. Las imágenes subidas se guardan en `uploads/` y los datos en la base. Ambas carpetas (`uploads/` y `server/data/`) hay que respaldarlas.
-
-Las fotos y la noticia que ya estaban se cargan solas en la base la primera vez. Si el servidor no está disponible, el sitio muestra el contenido de `data.js` como respaldo.
+Cualquiera puede ver el contenido; solo los usuarios listados en la tabla `admins` pueden publicar (lo hace cumplir la base de datos, no solo la web). Si Supabase no está configurado o no responde, el sitio muestra el contenido de `data.js`.

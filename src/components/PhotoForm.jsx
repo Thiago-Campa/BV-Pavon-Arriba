@@ -22,10 +22,7 @@ export default function PhotoForm({ onAdded, onCancel }) {
     setError('')
     setLoading(true)
     try {
-      const fd = new FormData()
-      fd.append('image', file)
-      fd.append('caption', caption)
-      const photo = await api.addPhoto(fd)
+      const photo = await api.addPhoto({ file, caption })
       onAdded(photo)
     } catch (err) {
       setError(err.message)
