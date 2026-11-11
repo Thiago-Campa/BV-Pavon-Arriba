@@ -1,4 +1,5 @@
 import Splash from './components/Splash.jsx'
+import FireCursor from './components/FireCursor.jsx'
 import GuardBar from './components/GuardBar.jsx'
 import Header from './components/Header.jsx'
 import Carousel from './components/Carousel.jsx'
@@ -16,6 +17,7 @@ export default function App() {
   return (
     <>
       <Splash />
+      <FireCursor />
       <GuardBar />
       <Header />
       <Carousel />

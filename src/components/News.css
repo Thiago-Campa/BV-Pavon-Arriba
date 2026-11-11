@@ -73,3 +73,32 @@
     aspect-ratio: 16 / 9;
   }
 }
+
+/* aviso pegado en la cartelera */
+.news-list {
+  gap: 34px;
+}
+
+.news-card {
+  position: relative;
+  overflow: visible;
+  border: 2px solid var(--ink-soft);
+  border-radius: 3px;
+  box-shadow: 7px 7px 0 var(--red);
+}
+
+.news-card::before {
+  content: '';
+  position: absolute;
+  top: -13px;
+  left: 30px;
+  width: 88px;
+  height: 24px;
+  background: rgba(201, 154, 46, 0.6);
+  transform: rotate(-4deg);
+  z-index: 2;
+}
+
+.news-image {
+  overflow: hidden;
+}

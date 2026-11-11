@@ -125,3 +125,11 @@
     border-bottom: none;
   }
 }
+
+.header-logo {
+  transition: transform 0.4s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.header-brand:hover .header-logo {
+  transform: rotate(-14deg) scale(1.14);
+}

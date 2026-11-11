@@ -128,3 +128,37 @@ button:focus-visible {
     padding: 56px 0;
   }
 }
+
+/* ---------- Carácter: letra de cuartel (stencil de cajón de herramientas) y nota a mano ---------- */
+:root {
+  --font-stencil: 'Big Shoulders Stencil Display', 'Oswald', sans-serif;
+  --font-hand: 'Caveat', cursive;
+}
+
+h2 {
+  font-family: var(--font-stencil);
+  font-weight: 800;
+  font-size: 2.6rem;
+  letter-spacing: 0.04em;
+  line-height: 1.05;
+}
+
+.section-eyebrow {
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 0;
+  text-transform: none;
+  transform: rotate(-2deg);
+  margin-bottom: 2px;
+}
+
+.section-head h2::after {
+  content: '';
+  display: block;
+  width: 84px;
+  height: 8px;
+  margin: 14px auto 0;
+  background: repeating-linear-gradient(-45deg, var(--red) 0 7px, var(--bg) 7px 14px);
+  border: 1px solid var(--red);
+}

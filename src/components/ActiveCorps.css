@@ -80,3 +80,53 @@
   background: var(--red);
   color: #fff;
 }
+
+/* credencial colgada del cuello */
+.roster-grid {
+  gap: 20px 16px;
+}
+
+.roster-card {
+  position: relative;
+  overflow: hidden;
+  padding: 32px 20px 18px;
+  border: 2px solid var(--ink-soft);
+  border-radius: 6px;
+  transform-origin: 50% 0;
+}
+
+.roster-card::before,
+.board-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 13px;
+  background: repeating-linear-gradient(90deg, var(--red) 0 18px, var(--red-dark) 18px 36px);
+}
+
+.roster-card::after,
+.board-card::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  width: 34px;
+  height: 7px;
+  margin-left: -17px;
+  border-radius: 4px;
+  background: var(--bg);
+  border: 1px solid var(--ink-soft);
+}
+
+.roster-card:hover {
+  transform: none;
+  animation: badge-swing 1.4s ease-out;
+}
+
+@keyframes badge-swing {
+  0% { transform: rotate(0); }
+  20% { transform: rotate(3.5deg); }
+  45% { transform: rotate(-2.4deg); }
+  70% { transform: rotate(1.2deg); }
+  100% { transform: rotate(0); }
+}

@@ -40,3 +40,9 @@
     aspect-ratio: 4 / 5;
   }
 }
+
+.map-frame {
+  border: 10px solid var(--navy);
+  border-radius: 3px;
+  box-shadow: 0 0 0 2px var(--gold), 0 14px 30px -14px rgba(0, 0, 0, 0.5);
+}

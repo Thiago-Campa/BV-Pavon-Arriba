@@ -39,3 +39,84 @@
     opacity: 0.35;
   }
 }
+
+.guard-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  position: sticky;
+}
+
+.guard-siren {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  padding: 3px 11px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.guard-siren:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.guard-beacon {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 50%;
+  opacity: 0.25;
+}
+
+.guard-beacon--l {
+  left: 14px;
+  background: #3b82f6;
+}
+
+.guard-beacon--r {
+  right: 14px;
+  background: #fff;
+}
+
+.guard-bar--on .guard-beacon--l {
+  animation: beacon 0.9s steps(1) infinite;
+}
+
+.guard-bar--on .guard-beacon--r {
+  animation: beacon 0.9s steps(1) infinite 0.45s;
+}
+
+@keyframes beacon {
+  0% {
+    opacity: 1;
+    box-shadow: 0 0 16px 6px currentColor;
+  }
+  50% {
+    opacity: 0.2;
+    box-shadow: none;
+  }
+}
+
+.guard-beacon--l {
+  color: #3b82f6;
+}
+
+.guard-beacon--r {
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guard-bar--on .guard-beacon {
+    animation: none;
+    opacity: 1;
+  }
+}

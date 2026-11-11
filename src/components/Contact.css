@@ -61,3 +61,10 @@
   color: var(--red);
   transform: translateY(-2px);
 }
+
+.contact-panel {
+  border: 2px solid var(--ink-soft);
+  outline: 1px solid var(--gold);
+  outline-offset: 8px;
+  border-radius: 4px;
+}

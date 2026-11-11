@@ -1,0 +1,30 @@
+html.fire-cursor-on,
+html.fire-cursor-on * {
+  cursor: none !important;
+}
+html.fire-cursor-on input,
+html.fire-cursor-on textarea,
+html.fire-cursor-on select {
+  cursor: text !important;
+}
+
+.fire-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3000;
+}
+
+.fire-ext {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 38px;
+  pointer-events: none;
+  z-index: 3001;
+  opacity: 0;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.35));
+}

@@ -8,6 +8,7 @@ const LONG_PRESS_MS = 400
 
 export default function Memorial() {
   const [zoomed, setZoomed] = useState(false)
+  const [lit, setLit] = useState(false)
   const timerRef = useRef(null)
 
   const startPress = () => {
@@ -48,6 +49,13 @@ export default function Memorial() {
               {memorial.years && <span> · {memorial.years}</span>}
             </p>
             <p className="memorial-tribute">{memorial.tribute}</p>
+            <button type="button" className={`candle-btn${lit ? ' candle-btn--lit' : ''}`} onClick={() => setLit((l) => !l)} aria-pressed={lit}>
+              <span className="candle" aria-hidden="true">
+                <i className="candle-flame" />
+                <i className="candle-wax" />
+              </span>
+              {lit ? 'Vela encendida' : 'Encender una vela'}
+            </button>
           </div>
         </motion.div>
       </div>
