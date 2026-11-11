@@ -303,3 +303,19 @@
   border-color: transparent;
   color: #fff;
 }
+
+/* ---------- Historia editable ---------- */
+.history-wrap .admin-form {
+  max-width: none;
+  width: 100%;
+  margin: 0 0 28px;
+}
+
+.history-textarea {
+  min-height: 320px;
+  line-height: 1.55;
+}
+
+.history-body p {
+  white-space: pre-line;
+}

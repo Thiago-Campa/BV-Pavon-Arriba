@@ -1,3 +1,4 @@
+import Splash from './components/Splash.jsx'
 import GuardBar from './components/GuardBar.jsx'
 import Header from './components/Header.jsx'
 import Carousel from './components/Carousel.jsx'
@@ -14,6 +15,7 @@ import Footer from './components/Footer.jsx'
 export default function App() {
   return (
     <>
+      <Splash />
       <GuardBar />
       <Header />
       <Carousel />

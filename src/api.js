@@ -139,6 +139,23 @@ export const api = {
     await removeStored('news', item.image)
   },
 
+  /* ---------- Textos del sitio (por ejemplo, la historia) ---------- */
+  async getContent(key) {
+    const { data, error } = await client().from('site_content').select('value').eq('key', key).maybeSingle()
+    if (error) throw new Error(friendly(error))
+    return data ? data.value : null
+  },
+
+  async saveContent(key, value) {
+    const { data, error } = await client()
+      .from('site_content')
+      .upsert({ key, value: value.trim(), updated_at: new Date().toISOString() }, { onConflict: 'key' })
+      .select('value')
+      .single()
+    if (error) throw new Error(friendly(error))
+    return data.value
+  },
+
   /* ---------- Cuerpo activo ---------- */
   async getMembers() {
     const { data, error } = await client().from('members').select('id, first_name, last_name, rank').order('id')

@@ -129,6 +129,7 @@ Cualquiera puede ver el contenido; solo los usuarios listados en la tabla `admin
 
 - **Fotos:** agregar y eliminar.
 - **Noticias:** agregar, modificar (título, fecha, texto, imagen) y eliminar.
+- **Nuestra historia:** modificar el texto (los párrafos se separan con una línea en blanco). Requiere correr `supabase/paso-3-historia.sql`.
 - **Cuerpo Activo:** agregar y eliminar integrantes (nombre, apellido y cargo: Jefe, Sub Jefe, Oficial, Sub Oficial, Bombero).
 - **Comisión Directiva:** agregar y eliminar integrantes (Presidente, Vicepresidente, Secretario, Tesorero, Vocal, Órgano de fiscalización).
 

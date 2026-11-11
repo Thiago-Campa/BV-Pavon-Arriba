@@ -11,6 +11,12 @@
       href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+    <style>
+      /* Evita un destello claro antes de que aparezca la pantalla de carga */
+      html:has(#root:empty) body {
+        background: #0f1727;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
